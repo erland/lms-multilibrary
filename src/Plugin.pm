@@ -187,9 +187,9 @@ sub setMode {
 	my @listRef = ();
 	initLibraries();
 
-	my $licenseManager = isPluginsInstalled($client,'LicenseManagerPlugin');
-	my $request = Slim::Control::Request::executeRequest($client,['licensemanager','validate','application:MultiLibrary']);
-	my $licensed = $request->getResult("result");
+	my $licenseManager = 1; #isPluginsInstalled($client,'LicenseManagerPlugin');
+	#my $request = Slim::Control::Request::executeRequest($client,['licensemanager','validate','application:MultiLibrary']);
+	my $licensed = 1; #$request->getResult("result");
 
 	if($licenseManager && $licensed) {
 		for my $library (keys %$libraries) {
@@ -1165,8 +1165,9 @@ sub refreshLibraries {
 					$sth->bind_param(1,$id,SQL_INTEGER);
 					$sth->execute();
 					$sth->finish();
-					my $request = Slim::Control::Request::executeRequest(undef,['licensemanager','validate','application:MultiLibrary']);
-					if($request->getResult("result") && defined($library->{'track'})) {
+					#my $request = Slim::Control::Request::executeRequest(undef,['licensemanager','validate','application:MultiLibrary']);
+					if(defined($library->{'track'})) {
+					#if($request->getResult("result") && defined($library->{'track'})) {
 						my $sql = $library->{'track'}->{'data'};
 						if(defined($sql)) {
 							$log->debug("Adding new data for library ".$library->{'id'}.", running $sql\n");
@@ -1215,9 +1216,9 @@ sub refreshLibraries {
 								$log->debug("Finished analyzing multilibrary tables\n");
 							}
 						}
-					}elsif(!$request->getResult("result")) {
-						$log->warn("Not refreshing Multi Library libraries, license required, see License Manager for more information");
-					}
+					}#elsif(!$request->getResult("result")) {
+					#	$log->warn("Not refreshing Multi Library libraries, license required, see License Manager for more information");
+					#}
 				}
 			};
 			if( $@ ) {
@@ -1522,9 +1523,9 @@ sub handleWebList {
 	}
 	$params->{'pluginMultiLibraryVersion'} = $PLUGINVERSION;
 
-	$params->{'licensemanager'} = isPluginsInstalled($client,'LicenseManagerPlugin');
-	my $request = Slim::Control::Request::executeRequest($client,['licensemanager','validate','application:MultiLibrary']);
-	$params->{'licensed'} = $request->getResult("result");
+	$params->{'licensemanager'} = 1; #isPluginsInstalled($client,'LicenseManagerPlugin');
+	#my $request = Slim::Control::Request::executeRequest($client,['licensemanager','validate','application:MultiLibrary']);
+	$params->{'licensed'} = 1; #$request->getResult("result");
 
 	if(defined($params->{'redirect'})) {
 		return Slim::Web::HTTP::filltemplatefile('plugins/MultiLibrary/multilibrary_redirect.html', $params);
